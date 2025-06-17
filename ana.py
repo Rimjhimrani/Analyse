@@ -538,8 +538,8 @@ def main():
         st.markdown('<div class="metric-card status-total">', unsafe_allow_html=True)
         st.metric(
             label="📊 Total Value",
-            value=f"₹{total_value:,}",
-            delta=f"{len(processed_data)} parts"
+             delta=f"{len(processed_data)} parts",
+            value=f"₹{total_value:,}"
         )
         st.markdown('</div>', unsafe_allow_html=True)
     
@@ -553,9 +553,9 @@ def main():
             'Total Parts': data['total_parts'],
             'Total QTY': round(data['total_qty'], 2),
             'Total RM': round(data['total_rm'], 2),
-            'Short Items': data['short_parts'],
-            'Excess Items': data['excess_parts'],
-            'Normal Items': data['normal_parts'],
+            'Short Inventory': data['short_parts'],
+            'Excess Inventory': data['excess_parts'],
+            'Within Norms': data['normal_parts'],
             'Total Value': f"₹{data['total_value']:,}"
         }
         for vendor, data in vendor_summary.items()
@@ -578,19 +578,19 @@ def main():
             show_pie = st.checkbox("Status Distribution (Pie)", value=True)
             show_comparison = st.checkbox("QTY vs RM Comparison", value=True)
             show_variance_hist = st.checkbox("Variance Distribution", value=False)
-            show_vendor_excess = st.checkbox("Top 10 Vendor-wise Excess Parts", value=True)
+            show_vendor_excess = st.checkbox("Top 10 Vendor-wise Excess Inventory Parts", value=True)
         
         with col2:
             show_excess = st.checkbox("Top Excess Parts", value=True)
             show_short = st.checkbox("Top Short Parts", value=True)
             show_scatter = st.checkbox("QTY vs RM Scatter", value=False)
-            show_vendor_short = st.checkbox("Top 10 Vendor-wise Short Parts", value=True)
+            show_vendor_short = st.checkbox("Top 10 Vendor-wise Short Inventory Parts", value=True)
         
         with col3:
             show_normal = st.checkbox("Top Normal Parts", value=False)
             show_variance_top = st.checkbox("Top Variance Parts", value=True)
             show_vendor_qty = st.checkbox("Top 10 Vendors by QTY", value=True)
-            show_vendor_normal = st.checkbox("Top 10 Vendor-wise Normal Parts", value=True)
+            show_vendor_normal = st.checkbox("Top 10 Vendor-wise Within Norms Parts", value=True)
         
         # Create graphs
         if show_pie:
@@ -635,8 +635,8 @@ def main():
             st.plotly_chart(fig_comparison, use_container_width=True)
         
         if show_vendor_qty:
-            st.subheader("🏢 Top 10 Vendors by Total QTY")
-            st.markdown('<div class="graph-description">This chart displays the top 10 vendors ranked by their total quantity contribution to your inventory. It helps identify key suppliers and their relative importance in your supply chain, useful for vendor relationship management and risk assessment.</div>', unsafe_allow_html=True)
+            st.subheader("🏢 Top 10 Vendors by Current QTY")
+            st.markdown('<div class="graph-description">This chart displays the top 10 vendors ranked by their current quantity contribution to your inventory. It helps identify key suppliers and their relative importance in your supply chain, useful for vendor relationship management and risk assessment.</div>', unsafe_allow_html=True)
             
             # Sort vendors by total QTY
             sorted_vendors = sorted(vendor_summary.items(), key=lambda x: x[1]['total_qty'], reverse=True)[:10]
@@ -645,7 +645,7 @@ def main():
             total_qtys = [data['total_qty'] for _, data in sorted_vendors]
             
             fig_vendor = go.Figure()
-            fig_vendor.add_trace(go.Bar(name='Total QTY', x=vendor_names, y=total_qtys, marker_color='#1f77b4'))
+            fig_vendor.add_trace(go.Bar(name='Current QTY', x=vendor_names, y=total_qtys, marker_color='#1f77b4'))
             
             fig_vendor.update_layout(
                 title="Top 10 Vendors by Total QTY",
@@ -658,17 +658,17 @@ def main():
         
         if show_excess:
             st.subheader("🔵 Top 10 Excess Inventory Parts")
-            st.markdown('<div class="graph-description">This chart identifies the top 10 parts with the highest excess inventory by variance value. These items represent tied-up capital and storage costs. Consider reducing orders for these items or finding alternative uses to optimize cash flow.</div>', unsafe_allow_html=True)
+            st.markdown('<div class="graph-description">This chart identifies the top 10 parts with the highest excess inventory by value. These items represent tied-up capital and storage costs. Consider reducing orders for these items or finding alternative uses to optimize cash flow.</div>', unsafe_allow_html=True)
             create_top_parts_chart(processed_data, 'Excess Inventory', analyzer.status_colors['Excess Inventory'])
         
         if show_short:
             st.subheader("🔴 Top 10 Short Inventory Parts")
-            st.markdown('<div class="graph-description">This chart shows the top 10 parts with the highest shortage by variance value. These items pose the greatest risk to operations and require immediate attention. Prioritize restocking these items to avoid production delays or stockouts.</div>', unsafe_allow_html=True)
+            st.markdown('<div class="graph-description">This chart shows the top 10 parts with the highest shortage by value. These items pose the greatest risk to operations and require immediate attention. Prioritize restocking these items to avoid production delays or stockouts.</div>', unsafe_allow_html=True)
             create_top_parts_chart(processed_data, 'Short Inventory', analyzer.status_colors['Short Inventory'])
         
         if show_normal:
             st.subheader("🟢 Top 10 Within Norms Parts")
-            st.markdown('<div class="graph-description">This chart displays the top 10 parts that are well-balanced within acceptable inventory norms. These items represent optimal inventory management and can serve as benchmarks for other parts. Use these as examples of good inventory control practices.</div>', unsafe_allow_html=True)
+            st.markdown('<div class="graph-description">This chart displays the top 10 parts that are well-balanced within acceptable inventory within norms. These items represent optimal inventory management and can serve as benchmarks for other parts. Use these as examples of good inventory control practices.</div>', unsafe_allow_html=True)
             create_top_parts_chart(processed_data, 'Within Norms', analyzer.status_colors['Within Norms'])
         
         if show_variance_top:
@@ -743,17 +743,17 @@ def main():
             st.plotly_chart(fig_scatter, use_container_width=True)
         
         if show_vendor_excess:
-            st.subheader("🔵 Top 10 Vendor-wise Excess Parts")
+            st.subheader("🔵 Top 10 Vendor-wise Excess Inventory Parts")
             st.markdown('<div class="graph-description">This chart shows the top excess inventory parts grouped by vendor. It helps identify which suppliers are contributing most to excess inventory, enabling targeted discussions about order quantities and delivery schedules.</div>', unsafe_allow_html=True)
             create_vendor_wise_top_parts_chart(processed_data, 'Excess Inventory', analyzer.status_colors['Excess Inventory'])
         
         if show_vendor_short:
-            st.subheader("🔴 Top 10 Vendor-wise Short Parts")
+            st.subheader("🔴 Top 10 Vendor-wise Short Inventory Parts")
             st.markdown('<div class="graph-description">This chart displays the top shortage items grouped by vendor. It helps identify suppliers that may need expedited orders or increased safety stock levels to prevent stockouts.</div>', unsafe_allow_html=True)
             create_vendor_wise_top_parts_chart(processed_data, 'Short Inventory', analyzer.status_colors['Short Inventory'])
         
         if show_vendor_normal:
-            st.subheader("🟢 Top 10 Vendor-wise Normal Parts")
+            st.subheader("🟢 Top 10 Vendor-wise Within Norms Parts")
             st.markdown('<div class="graph-description">This chart shows the top well-balanced parts grouped by vendor. These represent successful vendor relationships with optimal inventory levels that can be used as benchmarks for other supplier partnerships.</div>', unsafe_allow_html=True)
             create_vendor_wise_top_parts_chart(processed_data, 'Within Norms', analyzer.status_colors['Within Norms'])
     
