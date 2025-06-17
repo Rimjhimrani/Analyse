@@ -351,9 +351,9 @@ def create_top_parts_chart(processed_data, status, color):
     ])
     
     fig.update_layout(
-        title=f"Top 10 {status} Parts by Variance Value",
+        title=f"Top 10 {status} Parts by Value",
         xaxis_title="Material Code",
-        yaxis_title="Variance Value",
+        yaxis_title="Value",
         showlegend=False
     )
     
@@ -401,9 +401,9 @@ def create_vendor_wise_top_parts_chart(processed_data, status, color):
         ])
         
         fig.update_layout(
-            title=f"Top 10 Vendor-wise {status} Parts by Variance Value",
+            title=f"Top 10 Vendor-wise {status} Parts by Value",
             xaxis_title="Vendor",
-            yaxis_title="Variance Value",
+            yaxis_title="Value",
             showlegend=False
         )
         
@@ -538,8 +538,8 @@ def main():
         st.markdown('<div class="metric-card status-total">', unsafe_allow_html=True)
         st.metric(
             label="📊 Total Value",
-            delta=f"{len(processed_data)} parts",
-            value=f"₹{total_value:,}"
+            value=f"{len(processed_data)} parts",
+            delta=f"₹{total_value:,}"
         )
         st.markdown('</div>', unsafe_allow_html=True)
     
@@ -648,7 +648,7 @@ def main():
             fig_vendor.add_trace(go.Bar(name='Current QTY', x=vendor_names, y=total_qtys, marker_color='#1f77b4'))
             
             fig_vendor.update_layout(
-                title="Top 10 Vendors by Total QTY",
+                title="Top 10 Vendors by QTY",
                 xaxis_title="Vendor",
                 yaxis_title="Quantity",
                 showlegend=False  # Hide legend since there's only one series
