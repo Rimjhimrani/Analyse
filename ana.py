@@ -538,7 +538,7 @@ def main():
         st.markdown('<div class="metric-card status-total">', unsafe_allow_html=True)
         st.metric(
             label="📊 Total Value",
-             delta=f"{len(processed_data)} parts",
+            delta=f"{len(processed_data)} parts",
             value=f"₹{total_value:,}"
         )
         st.markdown('</div>', unsafe_allow_html=True)
